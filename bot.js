@@ -19,7 +19,7 @@
 // ═══════════════════════════════════════════════════════════════
 
 require('dotenv').config();
-const { Client, GatewayIntentBits, Events } = require('discord.js');
+const { Client, GatewayIntentBits, Events, Partials } = require('discord.js');
 const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
@@ -50,9 +50,12 @@ const freshStart = new Set();       // channelIds that skip --continue
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.DirectMessages,
         GatewayIntentBits.MessageContent,
-    ]
+    ],
+    partials: [
+        Partials.Channel, // required to receive DM events
+    ],
 });
 
 // ── Helpers ─────────────────────────────────────────────────
@@ -330,6 +333,9 @@ client.on(Events.MessageCreate, async (message) => {
     if (message.author.bot) return;
     if (!isAllowed(message.author.id)) return;
 
+    // Only respond to DMs — ignore server messages
+    if (!message.channel.isDMBased()) return;
+
     const content = message.content.trim();
     if (!content) return;
 
@@ -369,14 +375,14 @@ client.on(Events.MessageCreate, async (message) => {
 // ── Startup ─────────────────────────────────────────────────
 client.on(Events.ClientReady, () => {
     console.log('');
-    console.log('  Claude Code Hub - Online');
+    console.log('  Claude Code Hub - Online (DM mode)');
     console.log(`  Bot: ${client.user.tag}`);
     console.log(`  Projects: ${Object.keys(config.projects).length}`);
     console.log('');
-    console.log(`  Invite URL (add bot to your server):`);
-    console.log(`  https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=76800&scope=bot`);
+    console.log('  Invite URL (add bot to any server you\'re in, then DM it):');
+    console.log(`  https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=0&scope=bot`);
     console.log('');
-    console.log('  Waiting for messages from Discord...');
+    console.log('  Listening for DMs...');
     console.log('');
 });
 

@@ -49,8 +49,8 @@ echo   3. Go to "Bot" tab on the left
 echo   4. Click "Reset Token" and copy it
 echo   5. Open .env in this folder, paste your token
 echo   6. Under "Privileged Gateway Intents", enable MESSAGE CONTENT INTENT
-echo   7. Create a private Discord server (just for you)
-echo   8. Run start.bat - it will print an invite link
-echo   9. Use the invite link to add the bot to your server
+echo   7. Run start.bat - it will print an invite link
+echo   8. Use the invite link to add the bot to any server you're in
+echo   9. Click the bot's profile and "Message" to start a DM
 echo.
 pause
